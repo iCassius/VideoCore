@@ -81,6 +81,7 @@ namespace videocore { namespace iOS {
     m_previewLayer(nullptr),
     m_matrix(glm::mat4(1.f)),
     m_orientationLocked(false),
+    m_orientation(UIInterfaceOrientationUnknown),
     m_torchOn(false),
     m_useInterfaceOrientation(false),
     m_captureSession(nullptr)
@@ -312,8 +313,15 @@ namespace videocore { namespace iOS {
             
             [newVideoInput release];
             
+            m_orientation = UIInterfaceOrientationUnknown;
             reorientCamera();
         }
+    }
+    
+    UIInterfaceOrientation
+    CameraSource::orientation()
+    {
+        return m_orientation;
     }
     
     void
@@ -338,18 +346,19 @@ namespace videocore { namespace iOS {
                 
                 switch (orientation) {
                         // UIInterfaceOrientationPortraitUpsideDown, UIDeviceOrientationPortraitUpsideDown
-                    case UIInterfaceOrientationPortraitUpsideDown:
-                        if(av.videoOrientation != AVCaptureVideoOrientationPortraitUpsideDown) {
-                            av.videoOrientation = AVCaptureVideoOrientationPortraitUpsideDown;
+                    //case UIInterfaceOrientationPortraitUpsideDown:
+                        //if(av.videoOrientation != AVCaptureVideoOrientationPortraitUpsideDown) {
+                        //    av.videoOrientation = AVCaptureVideoOrientationPortraitUpsideDown;
                         //    reorient = true;
-                        }
-                        break;
+                        //}
+                        //break;
                         // UIInterfaceOrientationLandscapeRight, UIDeviceOrientationLandscapeLeft
                     case UIInterfaceOrientationLandscapeRight:
                         if(av.videoOrientation != AVCaptureVideoOrientationLandscapeRight) {
                             av.videoOrientation = AVCaptureVideoOrientationLandscapeRight;
                         //    reorient = true;
                         }
+                        m_orientation = UIInterfaceOrientationLandscapeRight;
                         break;
                         // UIInterfaceOrientationLandscapeLeft, UIDeviceOrientationLandscapeRight
                     case UIInterfaceOrientationLandscapeLeft:
@@ -357,15 +366,23 @@ namespace videocore { namespace iOS {
                             av.videoOrientation = AVCaptureVideoOrientationLandscapeLeft;
                          //   reorient = true;
                         }
+                        m_orientation = UIInterfaceOrientationLandscapeLeft;
                         break;
                         // UIInterfaceOrientationPortrait, UIDeviceOrientationPortrait
-                    case UIInterfaceOrientationPortrait:
-                        if(av.videoOrientation != AVCaptureVideoOrientationPortrait) {
-                            av.videoOrientation = AVCaptureVideoOrientationPortrait;
+                    //case UIInterfaceOrientationPortrait:
+                        //if(av.videoOrientation != AVCaptureVideoOrientationPortrait) {
+                        //    av.videoOrientation = AVCaptureVideoOrientationPortrait;
                         //    reorient = true;
-                        }
-                        break;
+                        //}
+                        //break;
                     default:
+                        if (m_orientation == UIInterfaceOrientationUnknown) {
+                            if(av.videoOrientation != AVCaptureVideoOrientationLandscapeRight) {
+                                av.videoOrientation = AVCaptureVideoOrientationLandscapeRight;
+                                //   reorient = true;
+                            }
+                            m_orientation = UIInterfaceOrientationLandscapeRight;
+                        }
                         break;
                 }
             }

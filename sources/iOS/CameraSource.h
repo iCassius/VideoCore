@@ -74,6 +74,11 @@ namespace videocore { namespace iOS {
          *  Toggle the camera between front and back-facing cameras.
          */
         void toggleCamera();
+        
+        /*!
+         * Return current camera orientation
+         */
+        UIInterfaceOrientation orientation();
 
         /*!
          * If the orientation is locked, we ignore device / interface
@@ -138,6 +143,7 @@ namespace videocore { namespace iOS {
         glm::mat4 m_matrix;
         struct { float x, y, w, h, vw, vh, a; } m_size, m_targetSize;
         
+        UIInterfaceOrientation m_orientation;
         std::weak_ptr<IOutput> m_output;
         
         void* m_captureSession;
