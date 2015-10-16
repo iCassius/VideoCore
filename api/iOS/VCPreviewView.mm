@@ -31,8 +31,9 @@
 #import <OpenGLES/ES2/gl.h>
 #import <OpenGLES/ES2/glext.h>
 
-#import <glm/glm.hpp>
-#import <glm/gtc/matrix_transform.hpp>
+// glm fix for cocoapods
+#import <../Public/glm/glm.hpp>
+#import <../Public/glm/gtc/matrix_transform.hpp>
 
 #include <atomic>
 
