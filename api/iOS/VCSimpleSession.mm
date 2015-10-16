@@ -85,7 +85,7 @@ namespace videocore { namespace simpleApi {
 }
 }
 
-@interface VCSimpleSession()
+@interface VCSimpleSession() <ScreenShotDelegate>
 {
 
     VCPreviewView* _previewView;
@@ -474,6 +474,7 @@ namespace videocore { namespace simpleApi {
     self.aspectMode = aspectMode;
 
     _previewView = [[VCPreviewView alloc] init];
+    [_previewView setScreenShotDelegate:self];
     self.videoZoomFactor = 1.f;
 
     _cameraState = cameraState;
@@ -690,6 +691,24 @@ namespace videocore { namespace simpleApi {
         m_videoMixer->setSourceFilter(m_cameraSource, dynamic_cast<videocore::IVideoFilter*>(m_videoMixer->filterFactory().filter(convertString))); // default is com.videocore.filters.bgra
 }
 
+- (void) takeScreenShot
+{
+    if(_previewView!=nil)
+    {
+        [_previewView takeScreenShot];
+    }
+}
+
+- (void)onScreenShot:(CVPixelBufferRef)pixelBuffer
+{
+    NSLog(@"onScreenShot pixelBuffer");
+    
+    if(_delegate)
+    {
+        [_delegate didGotScreenShot:pixelBuffer];
+    }
+}
+
 // -----------------------------------------------------------------------------
 //  Private Methods
 // -----------------------------------------------------------------------------
@@ -896,4 +915,5 @@ namespace videocore { namespace simpleApi {
     NSString *basePath = ([paths count] > 0) ? [paths objectAtIndex:0] : nil;
     return basePath;
 }
+
 @end
