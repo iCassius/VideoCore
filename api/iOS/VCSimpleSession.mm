@@ -85,7 +85,7 @@ namespace videocore { namespace simpleApi {
 }
 }
 
-@interface VCSimpleSession() <ScreenShotDelegate>
+@interface VCSimpleSession() <VCScreenShotDelegate>
 {
 
     VCPreviewView* _previewView;
@@ -475,6 +475,7 @@ namespace videocore { namespace simpleApi {
 
     _previewView = [[VCPreviewView alloc] init];
     [_previewView setScreenShotDelegate:self];
+
     self.videoZoomFactor = 1.f;
 
     _cameraState = cameraState;
@@ -693,18 +694,16 @@ namespace videocore { namespace simpleApi {
 
 - (void) takeScreenShot
 {
-    if(_previewView!=nil)
-    {
+    if (_previewView != nil) {
         [_previewView takeScreenShot];
     }
 }
 
-- (void)onScreenShot:(CVPixelBufferRef)pixelBuffer
+- (void)didGotScreenShot:(CVPixelBufferRef)pixelBuffer
 {
-    NSLog(@"onScreenShot pixelBuffer");
-    
-    if(_delegate)
-    {
+    NSLog(@"didGotScreenShot pixelBuffer");
+
+    if ([_delegate respondsToSelector:@selector(didGotScreenShot:)]) {
         [_delegate didGotScreenShot:pixelBuffer];
     }
 }

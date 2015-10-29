@@ -48,6 +48,7 @@
     int _currentBuffer;
     
     std::atomic<bool> _paused;
+    std::atomic<bool> _captureOnce;
     
     CVPixelBufferRef _currentRef[2];
     CVOpenGLESTextureCacheRef _cache;
@@ -166,11 +167,12 @@
 #pragma mark - Public Methods
 - (void) drawFrame:(CVPixelBufferRef)pixelBuffer
 {
-    if (self.isGotScreenShot) {
-        if (self.m_delegate!=nil) {
-            [self.m_delegate onScreenShot:pixelBuffer];
+    // BUG: if paused, shall we still capture incoming pixelBuffer?
+    if (_captureOnce) {
+        _captureOnce = false;
+        if (_screenShotDelegate != nil) {
+            [_screenShotDelegate didGotScreenShot:pixelBuffer];
         }
-        self.isGotScreenShot = NO;
     }
     
     if(_paused) return;
@@ -336,12 +338,7 @@
 
 - (void) takeScreenShot
 {
-    self.isGotScreenShot = YES;
-}
-
-- (void) setScreenShotDelegate:(id)sender
-{
-    self.m_delegate = sender;
+    _captureOnce = true;
 }
 
 @end
