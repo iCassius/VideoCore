@@ -40,6 +40,8 @@ namespace videocore { namespace iOS {
     class CameraSource : public ISource, public std::enable_shared_from_this<CameraSource>
     {
     public:
+        
+        
         /*! Constructor */
         CameraSource();
         
@@ -147,6 +149,7 @@ namespace videocore { namespace iOS {
         bool m_torchOn;
         bool m_useInterfaceOrientation;
         bool m_orientationLocked;
+
     };
     
 }
