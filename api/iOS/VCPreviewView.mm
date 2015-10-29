@@ -49,6 +49,7 @@
     int _currentBuffer;
     
     std::atomic<bool> _paused;
+    std::atomic<bool> _captureOnce;
     
     CVPixelBufferRef _currentRef[2];
     CVOpenGLESTextureCacheRef _cache;
@@ -58,6 +59,7 @@
 @property (nonatomic, strong) EAGLContext* context;
 @property (nonatomic) CAEAGLLayer* glLayer;
 @end
+
 @implementation VCPreviewView
 
 #pragma mark - UIView overrides
@@ -164,9 +166,15 @@
     }
 }
 #pragma mark - Public Methods
-
 - (void) drawFrame:(CVPixelBufferRef)pixelBuffer
 {
+    // BUG: if paused, shall we still capture incoming pixelBuffer?
+    if (_captureOnce) {
+        _captureOnce = false;
+        if (_screenShotDelegate != nil) {
+            [_screenShotDelegate didGotScreenShot:pixelBuffer];
+        }
+    }
     
     if(_paused) return;
     
@@ -327,6 +335,11 @@
     glVertexAttribPointer(attrtex, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 4, BUFFER_OFFSET(8));
     
     [EAGLContext setCurrentContext:current];
+}
+
+- (void) takeScreenShot
+{
+    _captureOnce = true;
 }
 
 @end
