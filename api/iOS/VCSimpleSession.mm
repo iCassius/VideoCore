@@ -153,6 +153,7 @@ namespace videocore { namespace simpleApi {
 @end
 
 @implementation VCSimpleSession
+
 @dynamic videoSize;
 @dynamic bitrate;
 @dynamic fps;
@@ -698,6 +699,11 @@ namespace videocore { namespace simpleApi {
         [_previewView takeScreenShot];
     }
 }
+
+// -----------------------------------------------------------------------------
+//  Delegate Callbacks
+// -----------------------------------------------------------------------------
+#pragma mark - Delegate Callbacks
 
 - (void)didGotScreenShot:(CVPixelBufferRef)pixelBuffer
 {

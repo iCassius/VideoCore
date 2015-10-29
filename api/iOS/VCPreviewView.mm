@@ -271,6 +271,12 @@
     });
     
 }
+
+- (void) takeScreenShot
+{
+    _captureOnce = true;
+}
+
 #pragma mark - Private Methods
 
 - (void) generateGLESBuffers
@@ -335,11 +341,6 @@
     glVertexAttribPointer(attrtex, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 4, BUFFER_OFFSET(8));
     
     [EAGLContext setCurrentContext:current];
-}
-
-- (void) takeScreenShot
-{
-    _captureOnce = true;
 }
 
 @end
