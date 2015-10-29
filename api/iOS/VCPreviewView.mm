@@ -168,14 +168,6 @@
 #pragma mark - Public Methods
 - (void) drawFrame:(CVPixelBufferRef)pixelBuffer
 {
-    // BUG: if paused, shall we still capture incoming pixelBuffer?
-    if (_captureOnce) {
-        _captureOnce = false;
-        if (_screenShotDelegate != nil) {
-            [_screenShotDelegate didGotScreenShot:pixelBuffer];
-        }
-    }
-    
     if(_paused) return;
     
     bool updateTexture = false;
@@ -268,6 +260,15 @@
         }
         [EAGLContext setCurrentContext:current];
         CVOpenGLESTextureCacheFlush(_cache,0);
+
+        // screenshot
+        if (bSelf->_captureOnce) {
+            bSelf->_captureOnce = false;
+
+            if (bSelf.screenShotDelegate != nil) {
+                [bSelf.screenShotDelegate didGotScreenShot:bSelf->_currentRef[currentBuffer]];
+            }
+        }
     });
     
 }

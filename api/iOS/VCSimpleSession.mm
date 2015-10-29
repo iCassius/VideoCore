@@ -710,7 +710,19 @@ namespace videocore { namespace simpleApi {
     NSLog(@"didGotScreenShot pixelBuffer");
 
     if ([_delegate respondsToSelector:@selector(didGotScreenShot:)]) {
-        [_delegate didGotScreenShot:pixelBuffer];
+        if (pixelBuffer != nil) {
+            CIImage *ciImage = [CIImage imageWithCVPixelBuffer:pixelBuffer];
+            
+            CIContext *temporaryContext = [CIContext contextWithOptions:nil];
+            CGImageRef image = [temporaryContext
+                                createCGImage:ciImage
+                                fromRect:CGRectMake(0, 0,
+                                                    CVPixelBufferGetWidth(pixelBuffer),
+                                                    CVPixelBufferGetHeight(pixelBuffer))];
+
+            [_delegate didGotScreenShot:image];
+            CGImageRelease(image);
+        }
     }
 }
 
