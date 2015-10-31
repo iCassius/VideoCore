@@ -52,7 +52,7 @@ namespace videocore { namespace Apple {
                     VTEncodeInfoFlags infoFlags,
                     CMSampleBufferRef sampleBuffer )
     {
-        if(sampleBuffer==nil) return;
+        if (!sampleBuffer) return;
         
         CMBlockBufferRef block = CMSampleBufferGetDataBuffer(sampleBuffer);
         CFArrayRef attachments = CMSampleBufferGetSampleAttachmentsArray(sampleBuffer, false);

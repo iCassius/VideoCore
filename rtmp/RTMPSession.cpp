@@ -206,15 +206,14 @@ namespace videocore
     void
     RTMPSession::write(uint8_t* data, size_t size, std::chrono::steady_clock::time_point packetTime, bool isKeyframe)
     {
-        if(size > 0) {
+        if (size > 0) {
 //            printf("m_networkQueue Count:%d\n",m_networkQueue.size());
             
-            if(m_networkQueue.size()>=200)
-            {
+            if (m_networkQueue.size() >= 200) {
                 m_isNetworkJobQueueFull = true;
             }
             
-            if (m_networkQueue.size()<=70 && isKeyframe) {
+            if (m_networkQueue.size() <= 70 && isKeyframe) {
                 m_isNetworkJobQueueFull = false;
             }
             

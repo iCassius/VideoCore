@@ -75,6 +75,9 @@ namespace videocore {
     {
     public:
         JobQueue(std::string name = "", JobQueuePriority priority = kJobQueuePriorityDefault) : m_exiting(false)
+#if _USE_GCD
+            , m_size(0)
+#endif
         {
 #if !_USE_GCD
             m_thread = std::thread([&]() { thread(); });
@@ -96,9 +99,6 @@ namespace videocore {
                     break;
             }
             dispatch_set_target_queue(m_queue, dispatch_get_global_queue(p, 0 ));
-            
-            m_size = 0;
-            
 #endif
         }
         ~JobQueue()
@@ -126,13 +126,11 @@ namespace videocore {
             m_cond.notify_all();
 #else
             m_size++;
-            
             dispatch_async(m_queue, ^{
                 if(!this->m_exiting.load()) {
                     (*job)();
-                    
-                    m_size--;
                 }
+                m_size--;
             });
 #endif
         }
@@ -149,10 +147,8 @@ namespace videocore {
             }
 #else
             m_size++;
-            
             dispatch_sync(m_queue, ^{
                 (*job)();
-                
                 m_size--;
             });
 #endif
