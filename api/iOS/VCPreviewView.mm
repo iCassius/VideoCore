@@ -177,7 +177,7 @@
 {
     if(_paused || _renderqlen >= 2) return;
 
-    ++_renderqlen;
+    _renderqlen++;
     
     bool updateTexture = false;
     
@@ -200,7 +200,7 @@
     __block VCPreviewView* bSelf = self;
     
     dispatch_async(dispatch_get_main_queue(), ^{
-        --bSelf->_renderqlen;
+        bSelf->_renderqlen--;
         
         EAGLContext* current = [EAGLContext currentContext];
         [EAGLContext setCurrentContext:bSelf.context];
