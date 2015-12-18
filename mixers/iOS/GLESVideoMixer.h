@@ -35,7 +35,8 @@
 #include <map>
 #include <thread>
 #include <mutex>
-#include <glm/glm.hpp>
+// glm fix for cocoapods
+#include <../Public/glm/glm.hpp>
 #include <CoreVideo/CoreVideo.h>
 #include <vector>
 #include <map>

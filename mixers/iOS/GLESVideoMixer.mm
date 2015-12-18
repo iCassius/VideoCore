@@ -38,7 +38,8 @@
 
 #include <CoreVideo/CoreVideo.h>
 
-#include <glm/gtc/matrix_transform.hpp>
+// glm fix for cocoapods
+#include <../Public/glm/gtc/matrix_transform.hpp>
 
 #define SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(v)  ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] != NSOrderedAscending)
 
@@ -429,7 +430,7 @@ namespace videocore { namespace iOS {
         if(zIndex < m_zRange.first) {
             m_zRange.first = zIndex;
         }
-        if(zIndex > m_zRange.second){
+        if(zIndex > m_zRange.second) {
             m_zRange.second = zIndex;
         }
         

@@ -29,8 +29,9 @@
 
 #import <AVFoundation/AVFoundation.h>
 #import <UIKit/UIKit.h>
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
+// glm fix for cocoapods
+#include <../Public/glm/glm.hpp>
+#include <../Public/glm/gtc/matrix_transform.hpp>
 
 #define SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(v)  ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] != NSOrderedAscending)
 

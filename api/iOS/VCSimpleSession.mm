@@ -36,7 +36,7 @@
 #ifdef __APPLE__
 #   include <videocore/mixers/Apple/AudioMixer.h>
 #   include <videocore/transforms/Apple/MP4Multiplexer.h>
-#   include <videocore/transforms/Apple/H264Encode.h>
+#   include <videocore/transforms/Apple/H264Encode+.h>
 #   include <videocore/sources/Apple/PixelBufferSource.h>
 #   ifdef TARGET_OS_IPHONE
 #       include <videocore/sources/iOS/CameraSource.h>
@@ -85,7 +85,7 @@ namespace videocore { namespace simpleApi {
 }
 }
 
-@interface VCSimpleSession()
+@interface VCSimpleSession() <VCScreenShotDelegate>
 {
 
     VCPreviewView* _previewView;
@@ -153,6 +153,7 @@ namespace videocore { namespace simpleApi {
 @end
 
 @implementation VCSimpleSession
+
 @dynamic videoSize;
 @dynamic bitrate;
 @dynamic fps;
@@ -474,6 +475,8 @@ namespace videocore { namespace simpleApi {
     self.aspectMode = aspectMode;
 
     _previewView = [[VCPreviewView alloc] init];
+    [_previewView setScreenShotDelegate:self];
+
     self.videoZoomFactor = 1.f;
 
     _cameraState = cameraState;
@@ -700,6 +703,39 @@ namespace videocore { namespace simpleApi {
         m_videoMixer->setSourceFilter(m_cameraSource, dynamic_cast<videocore::IVideoFilter*>(m_videoMixer->filterFactory().filter(convertString))); // default is com.videocore.filters.bgra
 }
 
+- (void) takeScreenShot
+{
+    if (_previewView != nil) {
+        [_previewView takeScreenShot];
+    }
+}
+
+// -----------------------------------------------------------------------------
+//  Delegate Callbacks
+// -----------------------------------------------------------------------------
+#pragma mark - Delegate Callbacks
+
+- (void)didGotScreenShot:(CVPixelBufferRef)pixelBuffer
+{
+    NSLog(@"didGotScreenShot pixelBuffer");
+
+    if ([_delegate respondsToSelector:@selector(didGotScreenShot:)]) {
+        if (pixelBuffer != nil) {
+            CIImage *ciImage = [CIImage imageWithCVPixelBuffer:pixelBuffer];
+            
+            CIContext *temporaryContext = [CIContext contextWithOptions:nil];
+            CGImageRef image = [temporaryContext
+                                createCGImage:ciImage
+                                fromRect:CGRectMake(0, 0,
+                                                    CVPixelBufferGetWidth(pixelBuffer),
+                                                    CVPixelBufferGetHeight(pixelBuffer))];
+
+            [_delegate didGotScreenShot:image];
+            CGImageRelease(image);
+        }
+    }
+}
+
 // -----------------------------------------------------------------------------
 //  Private Methods
 // -----------------------------------------------------------------------------
@@ -906,4 +942,5 @@ namespace videocore { namespace simpleApi {
     NSString *basePath = ([paths count] > 0) ? [paths objectAtIndex:0] : nil;
     return basePath;
 }
+
 @end

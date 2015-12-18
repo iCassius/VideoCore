@@ -29,7 +29,8 @@
 #include <videocore/filters/IVideoFilter.hpp>
 #include <videocore/filters/FilterFactory.h>
 
-#include <glm/glm.hpp>
+// glm fix for cocoapods
+#include <../Public/glm/glm.hpp>
 
 namespace videocore
 {
